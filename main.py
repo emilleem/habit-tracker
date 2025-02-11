@@ -1,4 +1,6 @@
 import time
+import random
+import os
 
 
 MENU = '''\033[1mWhat do you want to do (Q/q to quit)?\033[0m
@@ -6,8 +8,15 @@ MENU = '''\033[1mWhat do you want to do (Q/q to quit)?\033[0m
                 2. Track existing habit (T/t)
                 3. View habit log (V/v)'''
 
+HABITS = "habits.json"
+
+existing_ids = []
 
 def main():
+    if not os.path.isfile(HABITS):
+         f = open(HABITS, "x")
+         f.close()
+    
     print("***** Welcome to the silly goofy habit tracker! *****")
     time.sleep(1)
     print("The creator of this habit tracker is learning, so please do not judge. \n") 
@@ -25,7 +34,8 @@ def run_tracker():
             if command == "a":
                 new_habit = input("Very well! Name your new habit:\n>> ")
                 description = input("Enter a habit description:\n>> ")
-                create_habit(new_habit, description)
+                id = generate_habit_id()
+                create_habit(id, new_habit, description)
             elif command == "t":
                 display_short_log()
                 id = input("Enter the ID of the habit you'd like to track:\n>> ")
@@ -38,20 +48,31 @@ def run_tracker():
                 raise ValueError
             
 
-def create_habit(habit_name, habit_description):
-     pass
+def generate_habit_id():
+    while True:
+        id = "#"
+        for _ in range(3):
+            id += random.choice("0123456789")
+        
+        if id not in existing_ids:
+            existing_ids.append(id)
+            return id
+
+
+def create_habit(habit_id, habit_name, habit_description):
+    pass
 
 
 def track_habit(habit_id):
-     pass
+    pass
 
 
 def display_log():
-     pass
+    pass
 
 
 def display_short_log():
-     pass
+    pass
 
 
 if __name__ == "__main__":
