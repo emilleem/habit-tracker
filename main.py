@@ -1,3 +1,4 @@
+import csv
 import time
 import random
 import os
@@ -8,13 +9,17 @@ MENU = '''\033[1mWhat do you want to do (Q/q to quit)?\033[0m
                 2. Track existing habit (T/t)
                 3. View habit log (V/v)'''
 
-HABITS = "habits.json"
+HABITS = "habits.csv"
 
+# needs to be updated so that the program fetches data if there are already tracked habits
 existing_ids = []
+existing_habits = []
 
 def main():
     if not os.path.isfile(HABITS):
          f = open(HABITS, "x")
+         writer = csv.writer(f)
+         writer.writerow(["Habit name", "Habit description", "Habit ID"])
          f.close()
     
     print("***** Welcome to the silly goofy habit tracker! *****")
@@ -33,9 +38,8 @@ def run_tracker():
 
             if command == "a":
                 new_habit = input("Very well! Name your new habit:\n>> ")
-                description = input("Enter a habit description:\n>> ")
-                id = generate_habit_id()
-                create_habit(id, new_habit, description)
+                new_habit_description = input("Enter a habit description:\n>> ")
+                create_habit(new_habit, new_habit_description, generate_habit_id())
             elif command == "t":
                 display_short_log()
                 id = input("Enter the ID of the habit you'd like to track:\n>> ")
@@ -59,8 +63,16 @@ def generate_habit_id():
             return id
 
 
-def create_habit(habit_id, habit_name, habit_description):
-    pass
+def create_habit(habit_name, habit_description, habit_id):
+    new_habit = [habit_name, habit_description, habit_id]
+
+    existing_habits.append(new_habit)
+    with open(HABITS, "a", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(new_habit)
+    print("***** New habit created successfully! *****")
+    print(f"Name: {habit_name}\nDescription: {habit_description}\n")
+    time.sleep(1)
 
 
 def track_habit(habit_id):
