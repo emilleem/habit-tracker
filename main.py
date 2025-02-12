@@ -13,7 +13,6 @@ HABITS = "habits.csv"
 
 # needs to be updated so that the program fetches data if there are already tracked habits
 existing_ids = []
-existing_habits = []
 
 def main():
     if not os.path.isfile(HABITS):
@@ -41,11 +40,17 @@ def run_tracker():
                 new_habit_description = input("Enter a habit description:\n>> ")
                 create_habit(new_habit, new_habit_description, generate_habit_id())
             elif command == "t":
-                display_short_log()
-                id = input("Enter the ID of the habit you'd like to track:\n>> ")
+                print("In the following table, prepare to find the ID of the habit! ... \n")
+                time.sleep(1)
+                display_log()
+                time.sleep(1)
+                id = input("\nEnter the ID of the habit you'd like to track:\n>> ")
                 track_habit(id)
             elif command == "v":
+                print("Okay!! ...\n")
+                time.sleep(1)
                 display_log()
+                time.sleep(2)
             elif command == "q":
                 break
             else:
@@ -66,7 +71,6 @@ def generate_habit_id():
 def create_habit(habit_name, habit_description, habit_id):
     new_habit = [habit_name, habit_description, habit_id]
 
-    existing_habits.append(new_habit)
     with open(HABITS, "a", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(new_habit)
@@ -80,11 +84,19 @@ def track_habit(habit_id):
 
 
 def display_log():
-    pass
+    titled = False
 
-
-def display_short_log():
-    pass
+    print("-" * 60)
+    print(f"| {'YOUR EXISTING HABITS:':56} |")
+    print("-" * 60)
+    with open(HABITS, "r") as f:
+        content = csv.reader(f)
+        for row in content:
+            print(f"| {row[0]:16} | {row[1]:24} | {row[2]:10} |")
+            if not titled:
+                print("-" * 60)
+                titled = True
+    print("-" * 60)
 
 
 if __name__ == "__main__":
