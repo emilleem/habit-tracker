@@ -14,16 +14,14 @@ MENU = '''\033[1mWhat do you want to do (Q/q to quit)?\033[0m
 
 HABITS = "habits.csv"
 
-# needs to be updated so that the program fetches data if there are already tracked habits
 existing_ids = []
 habits = []
 
 def main():
     if not os.path.isfile(HABITS):
-         f = open(HABITS, "x")
-         writer = csv.writer(f)
-         writer.writerow(["Habit name", "Habit description", "Habit ID"])
-         f.close()
+         with open(HABITS, "x") as f:
+            writer = csv.writer(f)
+            writer.writerow(["Habit name", "Habit description", "Habit ID"])
     
     print("***** Welcome to the silly goofy habit tracker! *****")
     time.sleep(1)
@@ -46,8 +44,9 @@ def run_tracker():
                 print("\nGenerated new habit!\n")
                 print(new_habit.__str__())
                 time.sleep(1)
-                
+
                 habits.append(new_habit)
+                update_log(HABITS, new_habit)
             elif command == "t":
                 pass
             elif command == "v":
@@ -67,6 +66,12 @@ def generate_unique_id():
         if id not in existing_ids:
             existing_ids.append(id)
             return id
+
+
+def update_log(file, habit):
+    with open(file, "w") as f:
+            writer = csv.writer(f)
+            writer.writerow(habit.to_csv())
 
 
 if __name__ == "__main__":
